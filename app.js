@@ -23,6 +23,13 @@ const db = admin.firestore();
 
 // Endpoints start below
 
+app.get('/', (req, res) => {
+  res.send({
+    "code": 200,
+    "msg": "Welcome Gerardo!"
+  });
+});
+
 // Saves a position to the database
 app.post('/new-job', async (req, res) => {
   if (!req.body.company || !req.body.title || !req.body.workEnvironment) {
