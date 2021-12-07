@@ -1,5 +1,6 @@
 import fetch from "node-fetch";
 import express from 'express';
+import cors from 'cors';
 import fs from "fs";
 import path from 'path';
 import admin from 'firebase-admin';
@@ -21,6 +22,17 @@ admin.initializeApp({
 });
 const db = admin.firestore();
 
+app.use(cors());
+
+// const corsOptions = {
+//   origin: (origin, callback) => {
+//     loadOrigins((error, origins) => {
+//       callback(error, origins);
+//     })
+//   },
+//   optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
+// }
+
 // Endpoints start below
 
 app.get('/', (req, res) => {
@@ -31,7 +43,7 @@ app.get('/', (req, res) => {
 });
 
 // Saves a position to the database
-app.post('/new-job', async (req, res) => {
+app.post('/new-job', cors(corsOptions), async (req, res) => {
   if (!req.body.company || !req.body.title || !req.body.workEnvironment) {
     res.send({
       "code": 400,
