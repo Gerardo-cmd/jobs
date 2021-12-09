@@ -10,6 +10,10 @@ const app = express();
 
 app.use(express.json());
 
+app.use(cors({
+    origin: ['localhost', 'https://www.jobs.herokuapp.com']
+}));
+
 // Firebase starter code
 let serviceAccount;
 if (fs.existsSync('./secrets/jobs-e3a7e-firebase-adminsdk-z8tfx-b30a64c8f8.json')) {
@@ -22,17 +26,6 @@ admin.initializeApp({
 });
 const db = admin.firestore();
 
-app.use(cors());
-
-// const corsOptions = {
-//   origin: (origin, callback) => {
-//     loadOrigins((error, origins) => {
-//       callback(error, origins);
-//     })
-//   },
-//   optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
-// }
-
 // Endpoints start below
 
 app.get('/', (req, res) => {
@@ -43,8 +36,8 @@ app.get('/', (req, res) => {
 });
 
 // Saves a position to the database
-app.post('/new-job', cors(corsOptions), async (req, res) => {
-  if (!req.body.company || !req.body.title || !req.body.workEnvironment) {
+app.post(('/new-job'), async (req, res) => {
+  if (!req.body.company || !req.body.title || !req.body.workEnvironment || !req.body.salary) {
     res.send({
       "code": 400,
       "data": "Must include all necessary info!"
