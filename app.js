@@ -59,7 +59,7 @@ app.post(('/new-job'), async (req, res) => {
   const newPosition = {
     title: req.body.title,
     company: req.body.company,
-    salary: (req.body.salary) ? req.body.salary : null,
+    salary: req.body.salary,
     workEnvironment: req.body.workEnvironment
   }
   const setBody =  docRef.set(newPosition);
@@ -80,7 +80,7 @@ app.get('/jobs', async (req, res) => {
       result.push({
         title: position._fieldsProto.title.stringValue,
         company: position._fieldsProto.company.stringValue,
-        salary: position._fieldsProto.salary.integerValue,
+        salary: position._fieldsProto.salary.stringValue,
         workEnvironment: position._fieldsProto.workEnvironment.stringValue
       });
     })
