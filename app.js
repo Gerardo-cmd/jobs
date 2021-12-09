@@ -40,7 +40,7 @@ app.get('/', (req, res) => {
 
 // Saves a position to the database
 app.post(('/new-job'), async (req, res) => {
-  if (!req.body.company || !req.body.title || !req.body.workEnvironment || !req.body.salary) {
+  if (!req.body.company || !req.body.title || !req.body.workEnvironment || !req.body.salary || !req.body.status) {
     res.send({
       "code": 400,
       "data": "Must include all necessary info!"
@@ -60,7 +60,8 @@ app.post(('/new-job'), async (req, res) => {
     title: req.body.title,
     company: req.body.company,
     salary: req.body.salary,
-    workEnvironment: req.body.workEnvironment
+    workEnvironment: req.body.workEnvironment,
+    status: req.body.status
   }
   const setBody =  docRef.set(newPosition);
   res.send({
@@ -81,7 +82,8 @@ app.get('/jobs', async (req, res) => {
         title: position._fieldsProto.title.stringValue,
         company: position._fieldsProto.company.stringValue,
         salary: position._fieldsProto.salary.stringValue,
-        workEnvironment: position._fieldsProto.workEnvironment.stringValue
+        workEnvironment: position._fieldsProto.workEnvironment.stringValue,
+        status: position._fieldsProto.status.stringValue,
       });
     })
     if (firebaseData.length > 0) {
