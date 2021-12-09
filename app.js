@@ -11,7 +11,10 @@ const app = express();
 app.use(express.json());
 
 app.use(cors({
-    origin: ['localhost', 'https://www.jobs.herokuapp.com']
+    origin: ['localhost:3000', 'https://www.jobs.herokuapp.com'],
+    allowedHeaders: ['Content-Type'],
+    methods: ['GET, POST', 'DELETE'],
+    optionsSuccessStatus: 200
 }));
 
 // Firebase starter code
