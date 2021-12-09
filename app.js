@@ -11,7 +11,7 @@ const app = express();
 app.use(express.json());
 
 app.use(cors({
-    origin: ['localhost:3000', 'https://www.jobs.herokuapp.com'],
+    origin: ['http://localhost:3000', 'https://www.jobs.herokuapp.com'],
     allowedHeaders: ['Content-Type'],
     methods: ['GET, POST', 'DELETE'],
     optionsSuccessStatus: 200
