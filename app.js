@@ -21,7 +21,7 @@ app.use(express.json());
 // Activate cors
 app.use(cors({
     origin: ['http://localhost:3000', 'https://www.jobs.herokuapp.com'],
-    allowedHeaders: ['Content-Type'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
     methods: ['GET, POST', 'DELETE'],
     optionsSuccessStatus: 200
 }));
@@ -100,8 +100,10 @@ app.post('/new-user', async (req, res) => {
   const docRef = db.collection('users').doc(`${req.body.email}`);
   const newUser = {
     email: req.body.email,
-    password: md5(req.body.password)
+    password: md5(req.body.password),
+    token: jwt.sign(req.body.email, process.env.SECRET)
   }
+
   const setBody =  docRef.set(newUser);
   res.send({
     "code": 200,
