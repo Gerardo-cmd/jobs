@@ -20,7 +20,7 @@ app.use(express.json());
 
 // Activate cors
 app.use(cors({
-    origin: ['http://localhost:3000', 'https://www.jobs.herokuapp.com'],
+    origin: ['http://localhost:3000', 'https://myapplications-gfb.netlify.app'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     methods: ['GET, POST', 'DELETE'],
     optionsSuccessStatus: 200
