@@ -160,17 +160,10 @@ app.get('/jobs', auth, async (req, res) => {
       status: position._fieldsProto.status.stringValue,
     });
   })
-  if (firebaseData.length > 0) {
+  if (firebaseData.length >= 0) {
     res.send({
       "code": 200,
       "data": result
-    });
-    return;
-  }
-  else { //No positions saved in firebase
-    res.send({
-      "code": 400,
-      "msg": "You currently have no positions saved"
     });
     return;
   }
