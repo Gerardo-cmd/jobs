@@ -121,7 +121,9 @@ app.post('/new-job', auth, async (req, res) => {
     });
     return;
   }
-  const docRefTest = await db.collection(`${req.email}-positions`).doc(`${req.body.company}-${req.body.title}`).get();
+  const company = req.body.company.replace(/ /g, "_");
+  const title = req.body.title.replace(/ /g, "_");
+  const docRefTest = await db.collection(`${req.email}-positions`).doc(`${company}-${title}`).get();
   if (docRefTest.exists) {
     res.send({
       "code": 401,
@@ -129,7 +131,7 @@ app.post('/new-job', auth, async (req, res) => {
     });
     return;
   }
-  const docRef = db.collection(`${req.email}-positions`).doc(`${req.body.company}-${req.body.title}`);
+  const docRef = db.collection(`${req.email}-positions`).doc(`${company}-${title}`);
   const newPosition = {
     title: req.body.title.toString(),
     company: req.body.company.toString(),
@@ -137,7 +139,7 @@ app.post('/new-job', auth, async (req, res) => {
     workEnvironment: req.body.workEnvironment.toString(),
     status: req.body.status.toString()
   }
-  const setBody =  docRef.set(newPosition);
+  const setBody = await docRef.set(newPosition);
   res.send({
     "code": 200,
     "data": {
@@ -169,18 +171,86 @@ app.get('/jobs', auth, async (req, res) => {
   }
 });
 
-// Deletes a position from the database
-app.delete('/job', auth, async (req, res) => {
-  if (!req.body.company || !req.body.title) {
+app.get(`/job/:jobId`, auth, async (req, res) => {
+  //Guaranteed to have the jobId if in this endpoint, no need to check
+  const docRefTest = await db.collection(`${req.email}-positions`).doc(`${req.params.jobId}`).get();
+  if (!docRefTest.exists) {
+    res.send({
+      "code": 401,
+      "msg": "Could not find position!"
+    });
+    return;
+  }
+  else {
+    // Save new job
+    const result = {
+      title: docRefTest._fieldsProto.title.stringValue,
+      company: docRefTest._fieldsProto.company.stringValue,
+      salary: docRefTest._fieldsProto.salary.stringValue,
+      workEnvironment: docRefTest._fieldsProto.workEnvironment.stringValue,
+      status: docRefTest._fieldsProto.status.stringValue,
+    };
+    res.send({
+      "code": 200,
+      "data": result
+    });
+    return;
+  }
+});
+
+app.post('/job', auth, async (req, res) => {
+  if (!req.body.jobId || !req.body.company || !req.body.title || !req.body.salary || !req.body.workEnvironment || !req.body.status) {
     res.send({
       "code": 400,
       "msg": "Must include all necessary info!"
     });
     return;
   }
-  const docRefTest = await db.collection(`${req.email}-positions`).doc(`${req.body.company}-${req.body.title}`).get();
+  const docRefTest = await db.collection(`${req.email}-positions`).doc(`${req.body.jobId}`).get();
+  if (!docRefTest.exists) {
+    res.send({
+      "code": 401,
+      "msg": "Could not find position!"
+    });
+    return;
+  }
+  else {
+    // Delete old job
+    const result = await db.collection(`${req.email}-positions`).doc(`${req.body.jobId}`).delete();
+    // Save new job
+    const company = req.body.company.replace(/ /g, "_");
+    const title = req.body.title.replace(/ /g, "_");
+    const docRef = db.collection(`${req.email}-positions`).doc(`${company}-${title}`);
+    const newPosition = {
+      title: req.body.title.toString(),
+      company: req.body.company.toString(),
+      salary: req.body.salary.toString(),
+      workEnvironment: req.body.workEnvironment.toString(),
+      status: req.body.status.toString()
+    }
+    const setBody = await docRef.set(newPosition);
+    res.send({
+      "code": 200,
+      "data": {
+        position: newPosition
+      }
+    });
+    return;
+  }
+});
+
+// Deletes a position from the database
+app.delete('/job', auth, async (req, res) => {
+  if (!req.body.jobId) {
+    res.send({
+      "code": 400,
+      "msg": "Must include all necessary info!"
+    });
+    return;
+  }
+  const docRefTest = await db.collection(`${req.email}-positions`).doc(`${req.body.jobId}`).get();
   if (docRefTest.exists) {
-    const result = await db.collection(`${req.email}-positions`).doc(`${req.body.company}-${req.body.title}`).delete();
+    const result = await db.collection(`${req.email}-positions`).doc(`${req.body.jobId}`).delete();
     res.send({
       "code": 200,
       "msg": "Success"
