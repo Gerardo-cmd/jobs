@@ -20,7 +20,7 @@ app.use(express.json());
 
 // Activate cors
 app.use(cors({
-    origin: ['http://localhost:3000', 'https://myapplications-gfb.netlify.app'],
+    origin: ['http://localhost:3000', 'https://applicationtracker.netlify.app'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     methods: ['GET, POST', 'DELETE'],
     optionsSuccessStatus: 200
