@@ -137,7 +137,8 @@ app.post('/new-job', auth, async (req, res) => {
     company: req.body.company.toString(),
     salary: req.body.salary.toString(),
     workEnvironment: req.body.workEnvironment.toString(),
-    status: req.body.status.toString()
+    status: req.body.status.toString(),
+    desc: req.body.desc !== null ? req.body.desc.toString() : null
   }
   const setBody = await docRef.set(newPosition);
   res.send({
@@ -160,6 +161,7 @@ app.get('/jobs', auth, async (req, res) => {
       salary: position._fieldsProto.salary.stringValue,
       workEnvironment: position._fieldsProto.workEnvironment.stringValue,
       status: position._fieldsProto.status.stringValue,
+      desc: position._fieldsProto.desc ? position._fieldsProto.desc.stringValue : null
     });
   })
   if (firebaseData.length >= 0) {
@@ -189,6 +191,7 @@ app.get(`/job/:jobId`, auth, async (req, res) => {
       salary: docRefTest._fieldsProto.salary.stringValue,
       workEnvironment: docRefTest._fieldsProto.workEnvironment.stringValue,
       status: docRefTest._fieldsProto.status.stringValue,
+      desc: docRefTest._fieldsProto.desc ? docRefTest._fieldsProto.desc.stringValue : null
     };
     res.send({
       "code": 200,
@@ -226,7 +229,8 @@ app.post('/job', auth, async (req, res) => {
       company: req.body.company.toString(),
       salary: req.body.salary.toString(),
       workEnvironment: req.body.workEnvironment.toString(),
-      status: req.body.status.toString()
+      status: req.body.status.toString(),
+      desc: req.body.desc !== null ? req.body.desc.toString() : null
     }
     const setBody = await docRef.set(newPosition);
     res.send({
